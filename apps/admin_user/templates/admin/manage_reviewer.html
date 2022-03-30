@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  {{title}}
+{% endblock title %}
+{% load crispy_forms_tags %}
+{% block main_content %}
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+  <!-- /.card-header -->
+
+  {% include "messages.html" %}
+  
+    <div class="row">
+      <div class="col-12">
+
+
+        <div class="card">
+          
+          <div class="card-header" style="background-color: #743DB8;color:white;">
+            <span>{{title}}</span>
+
+           
+            </form>
+          </div>
+         
+          <!-- /.card-header -->
+          <div class="card-body table-responsive">
+            
+            {% url 'reviewer:add_reviewer' as button_url %}
+
+            {% include 'override_table/header_button.html' with button_title='Add Reviewer' button_url=button_url %}
+          
+                 
+            <table id="dataTable" class="table table-sm  table-striped table-bordered table-hover  text-nowrap  dataTable no-footer">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>ID</th>
+                  <th>Image</th>
+                  <th>Full Name</th>
+                  <th>Username</th>
+                  <th>Address</th>
+                  <th>Created At</th>
+                  <th>Action</th>
+
+                
+                
+                </tr>
+              </thead>
+              <tbody>
+                {% for reviewer in reviewers %}
+                {% include "admin/delete.html" %}
+                <tr>
+                  <td></td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>
+                    {% if reviewer.image %}
+
+                 <a href="{{ reviewer.image.url }}">   <img src="{{ reviewer.image.url }}" alt="" style="width:35px;height:35px;" class="img-circle" /></a>
+
+                    {% else %}
+                    <img src="{% static 'image/default_profile.png' %}" alt="" style="width:35px;height:35px;" class="img-circle" />
+                    {% endif %}
+                    </td>
+                  <td>{{ reviewer.full_name }}</td>
+
+                  <td>{{ reviewer.reviewer_user.username }}</td>
+                  <td>{{ reviewer.address }}</td>
+                  <td>{{ reviewer.created_at }}</td>
+                  <td>
+                    
+                    <a href="{% url 'reviewer:edit_reviewer' reviewer.pk %}" class="btn btn-xs btn-success"><i class="fas fa-xs fa-edit"></i></a>
+                    <button  class="btn btn-danger btn-xs"  data-target='#deleteReviewer-{{ reviewer.reviewer_user.pk }}' data-toggle="modal"><i
+                      class="fas fa-sm fa-trash-alt"></i></button>
+                  </td>
+                
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+
+{% endblock main_content %}

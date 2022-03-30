@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  {{title}}
+{% endblock title %}
+{% load crispy_forms_tags %}
+{% block main_content %}
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+  <!-- /.card-header -->
+
+  {% include "messages.html" %}
+  
+    <div class="row">
+      <div class="col-12">
+
+
+        <div class="card">
+          
+          <div class="card-header" style="background-color: #743DB8;color:white;">
+            <span>{{title}}</span>
+
+           
+            </form>
+          </div>
+         
+          <!-- /.card-header -->
+          <div class="card-body table-responsive">
+            
+            {% url '' as button_url %}
+          
+                 
+            <table id="dataTable" class="table table-sm  table-striped table-bordered table-hover  text-nowrap  dataTable no-footer">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>ID</th>
+                  <th>Image</th>
+                  <th>Full Name</th>
+                  <th>Username</th>
+                  <th>Address</th>
+                  <th>Created At</th>
+
+                
+                
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td></td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>
+                    {% if user.image %}
+
+                 <a href="{{ user.image.url }}">   <img src="{{ user.image.url }}" alt="" style="width:35px;height:35px;" class="img-circle" /></a>
+
+                    {% else %}
+                    <img src="{% static 'image/default_profile.png' %}" alt="" style="width:35px;height:35px;" class="img-circle" />
+                    {% endif %}
+                    </td>
+                  <td>{{ user.full_name }}</td>
+
+                  <td>{{ user.normal_user.username }}</td>
+                  <td>{{ user.address }}</td>
+               
+                  <td>{{ user.created_at }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+
+{% endblock main_content %}
+
+

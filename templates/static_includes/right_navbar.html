@@ -1,0 +1,146 @@
+{% load static %}
+{% load auth_extras %}
+
+<ul class="navbar-nav ml-auto">
+  <!-- Messages Dropdown Menu -->
+  <li class="nav-item dropdown">
+
+  </li>
+
+  <!----------------------------------------------------------------- Right navbar links --------------------------------------------------->
+  <!-- ------------------Notifications Dropdown Menu----------------------- -->
+  <!-- <li class="nav-item dropdown">
+
+
+    <a class="nav-link mt-1" data-toggle="dropdown" href="#" id="notification">
+      <i class="fas fa-lg fa-bell" style="color:black;"></i>
+    {% if notify_count >= 1 %}
+
+      <span class="badge badge-danger  navbar-badge text-bold" id="notification_count">{{notify_count}}</span>
+      
+    {% endif %}
+
+    </a>
+
+
+    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right">
+      <span class="dropdown-item dropdown-header">
+   
+
+      <div class="dropdown-divider"></div>
+
+      {% if notification %}
+      {% for notify in notification %}
+
+      <a href="" class="dropdown-item"></a>
+
+
+      <div class="d-flex justify-content-between">
+        <div class="bd-highlight">
+          {% if notify.notification_type == 1 %}
+
+          {% if notify.type == "notice" %}
+          <a href="">{{notify.post|striptags}} notice is added</a>
+
+          {% elif notify.type == "assignment" %}
+          <a href=""> {{notify.post|striptags}} assignment is added.</a>
+
+          {% elif notify.type == "event" %}
+          <a href=''> {{notify.post|striptags}} event is added.</a>
+          {% endif %}
+
+          {% endif %}
+
+          {% if notify.notification_type == 2 %}
+          <a href="">{{notify.post|striptags}}is Updated</a>
+
+          {% elif notify.notification_type == 3 %}
+          <p class="fas fa-briefcase mr-2">A new vacancy <b>" {{notify.post|striptags}} "</b>is created</p>
+
+
+          {% endif %}
+        </div>
+        <div class="bd-highlight mr-2">
+          <span class="text-muted text-sm">{{notify.created_at | date:"D, d M, g:i a"}}</span>
+
+        </div>
+      </div>
+
+
+
+
+      </a>
+      {% endfor %}
+      {% endif %}
+      <div class="dropdown-divider"></div>
+
+      
+    
+        <a href="" class="dropdown-item dropdown-footer">See All
+          Notifications</a>
+        
+   
+    </div>
+  </li> -->
+
+  <!-- --------------------Notification close---------------------- -->
+
+  <!--for profile logout-->
+  <li class="nav-item dropdown user user-menu">
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+
+      <div class="user-panel">
+        <img src="{% static 'image/admin.png' %}" class="img-circle elevation-1 mb-2" alt="User Image">
+        <span class="hidden-xs ml-2">{{ request.user.username }}</span>
+      </div>
+
+    </a>
+    <ul class="dropdown-menu dropdown-menu-xs dropdown-menu-right" style="height: 30%;">
+      <!-- User image -->
+      <li class="user-header" style="background-color: white;">
+        <div class="user-panel">
+          <img src="{% static 'image/admin.png' %}" class="img-circle elevation-2 mb-2" alt="User Image">
+
+        </div>
+
+        <span class="text-black">
+          
+          {{ request.user.username }}<br>
+          <small> <strong>Last Login : </strong> {{ request.user.last_login }}</small>
+        </span>
+      </li>
+
+      <li class="user-footer">
+        <div class="float-left">
+          {% if request.user|has_group:'User' %}
+          <a href="" class="btn btn-sm btn-default btn-flat">Profile</a>
+          {% endif %}
+          <a href="/user_password_reset/" class="btn btn-sm ml-2  btn-default btn-flat">Reset Password</a>
+
+        </div>
+        <!-- <div class="float-left ml-3">
+      <a href="" class="btn btn-default btn-flat">Settings</a>
+    </div> -->
+        <div class="float-right">
+
+
+          {% if request.user.is_authenticated %}
+          <a class="btn btn-sm  btn-default btn-flat" href="{% url 'logout' %}">
+            Sign out
+          </a>
+          {% else %}
+          <a class="btn btn-sm  btn-default btn-flat" href="{% url 'login' %}">
+            Login
+          </a>
+
+          {% endif %}
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<!-- /.navbar -->
+<!----------------------------------------------------------------- Right navbar links --------------------------------------------------->
+</nav>
+<!-- /.navbar -->

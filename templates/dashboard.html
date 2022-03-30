@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load auth_extras %}
+
+{% block title %}
+Dashboard
+{% endblock title %}
+
+
+{% block main_content %}
+
+
+<!---------------------------------------------Admin dashboard start----------------------------------------------------------------->
+
+<script src="{% static 'plugins/highchart_js/highcharts.js' %}"></script>
+<script src="{% static 'plugins/highchart_js/modules/exporting.js' %}"></script>
+<script src="{% static 'plugins/highchart_js/modules/export-data.js' %}"></script>
+<script src="{% static 'plugins/highchart_js/modules/accessibility.js' %}"></script>
+
+<!-- Main content -->
+
+
+
+<section class="content">
+  <div class="container-fluid">
+    <!-- Small boxes (Stat box) -->
+    {% if request.user|has_group:'Admin' or request.user.is_superuser %}
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box border border-info">
+          <span class="info-box-icon bg-info elevation-1">
+            <a href=""> <i class="fas fa-1x fa-users"></i></a>
+          </span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Total reviewer</span>
+            <span class="info-box-number">
+              {{reviewer_count}}
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-primary">
+          <span class="info-box-icon elevation-1" style="background-color: #004de6;">
+            <a href="" class="text-white"> <i class="fas fa-1x fa-users"></i></a>
+          </span>
+
+          <div class="info-box-content ">
+            <span class="info-box-text">Total users</span>
+            <span class="info-box-number">{{normaluser_count}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+
+      <!-- fix for small devices only -->
+      <div class="clearfix hidden-md-up"></div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-primary">
+          <span class="info-box-icon bg-primary elevation-1">
+            <a href=""> <i class="fas fa-1x fa-book-open"></i></a>
+          </span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Today Publish</span>
+            <span class="info-box-number">{{today_publish_count}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-success">
+          <span class="info-box-icon bg-success elevation-1"> <i class="fas fa-1x fa-book-open"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Total Unpublish</span>
+            <span class="info-box-number">{{unpublish_count}}</span>
+          </div>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+ <!-- -------------------------------------------------------Hight chart start----------------------------------------------- -->
+ <div class="row">
+  <div class="col-md-6">
+    <figure class="users_total">
+      <div id="users_total-container"></div>
+      <!-- <p class="highcharts-description">
+      This pie chart shows the total number os students and teachers.
+  </p> -->
+    </figure>
+  </div>
+  <div class="col-md-6">
+    <figure class="publish_unpublish_articles">
+      <div id="publish_unpublish_articles-container"></div>
+      <!-- <p class="highcharts-description">
+      chart for subject and year
+
+  </p> -->
+    </figure>
+  </div>
+</div>
+{% include "chart_includes/admin_pie.html" %}
+{% include "chart_includes/admin_bar.html" %}
+
+        <!-- --------------------------------------------------------User -->
+    {% elif request.user|has_group:'User'  %}
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box border border-info">
+          <span class="info-box-icon px-4 bg-info elevation-1">
+            <a href=""> <i class="fas fa-1x fa-newspaper"></i></a>
+          </span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Total Submitted articles</span>
+            <span class="info-box-number">
+              {{total_user_articles_submitted_count}}
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+  
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-primary">
+          <span class="info-box-icon elevation-1" style="background-color: #004de6;">
+            <a href="" class="text-white"> <i class="fas fa-1x fa-newspaper"></i></a>
+          </span>
+
+          <div class="info-box-content ">
+            <span class="info-box-text">Total accepted</span>
+            <span class="info-box-number">{{total_user_article_accepted_count}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+
+      <!-- fix for small devices only -->
+      <div class="clearfix hidden-md-up"></div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-primary">
+          <span class="info-box-icon bg-primary elevation-1">
+            <a href=""> <i class="fas fa-1x fa-newspaper"></i></a>
+          </span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Total rejected</span>
+            <span class="info-box-number">{{total_user_article_rejected_count}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-success">
+          <span class="info-box-icon bg-success elevation-1"> <i class="fas fa-1x fa-newspaper"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Under review</span>
+            <span class="info-box-number">{{total_user_article_under_review_count}}</span>
+          </div>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+      <!-- -------------------------------------------------------Hight chart start----------------------------------------------- -->
+  <div class="row">
+    <div class="col-md-12">
+      <figure class="user_pie-container">
+        <div id="user_pie-container"></div>
+        <!-- <p class="highcharts-description">
+        This pie chart shows the total number os students and teachers.
+    </p> -->
+      </figure>
+    </div>
+   
+  </div>
+  {% include "chart_includes/user_pie.html" %}
+  {% include "chart_includes/reviewer_bar.html" %}
+   
+    {% elif request.user|has_group:'Reviewer'  %}
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box border border-info">
+          <span class="info-box-icon bg-info elevation-1">
+            <a href=""> <i class="fas fa-1x fa-newspaper"></i></a>
+          </span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Today accepted</span>
+            <span class="info-box-number">
+              {{today_accepted_article_by_reviewer_count}}
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+  
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-primary">
+          <span class="info-box-icon elevation-1" style="background-color: #004de6;">
+            <a href="" class="text-white"> <i class="fas fa-1x fa-newspaper"></i></a>
+          </span>
+
+          <div class="info-box-content ">
+            <span class="info-box-text">Today rejected</span>
+            <span class="info-box-number">{{today_rejected_article_by_reviewer_count}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+
+      <!-- fix for small devices only -->
+      <div class="clearfix hidden-md-up"></div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-primary">
+          <span class="info-box-icon bg-primary elevation-1">
+            <a href=""> <i class="fas fa-1x fa-newspaper"></i></a>
+          </span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Today Publish</span>
+            <span class="info-box-number">{{today_publish_article_to_admin_count}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3 border border-success">
+          <span class="info-box-icon bg-success elevation-1"> <i class="fas fa-1x fa-newspaper"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Under review</span>
+            <span class="info-box-number">{{article_under_review_count}}</span>
+          </div>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+  <!-- -------------------------------------------------------Hight chart start----------------------------------------------- -->
+  <div class="row">
+    <div class="col-md-6">
+      <figure class="reviewer_pie-container">
+        <div id="reviewer_pie-container"></div>
+        <!-- <p class="highcharts-description">
+        This pie chart shows the total number os students and teachers.
+    </p> -->
+      </figure>
+    </div>
+    <div class="col-md-6">
+      <figure class="reviewer_bar-container">
+        <div id="reviewer_bar-container"></div>
+        <!-- <p class="highcharts-description">
+        chart for subject and year
+  
+    </p> -->
+      </figure>
+    </div>
+  </div>
+  {% include "chart_includes/reviewer_pie.html" %}
+  {% include "chart_includes/reviewer_bar.html" %}
+    {% endif %}
+    
+      
+    <!-- /.row -->
+
+</section>
+
+{% endblock  %}
+
+
+{% block custom_js %}
+{% endblock custom_js %}

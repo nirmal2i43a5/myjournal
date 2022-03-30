@@ -1,0 +1,246 @@
+
+<!-- ----- ------------------------------------------Article Management---------------------------------------------------->
+
+
+{% if perms.user.view_normaluser %}
+  
+  
+<li class="nav-item has-treeview">
+  <a href="#" class="nav-link">
+    <i class="fas  fa-newspaper mr-1"></i>
+    <p>
+      Article Mangement
+
+      <i class="fas fa-angle-left right"></i>
+
+
+    </p>
+  </a>
+  {% if perms.user.view_normaluser %}
+  <ul class="nav nav-treeview">
+    <li class="nav-item ml-3">
+      <a href="{% url 'admin_app:user-view' %}" class="nav-link">
+        <i class="fas fa-xs fa-circle"></i>
+        <p>
+          Articles
+
+        </p>
+      </a>
+    </li>
+  </ul>
+  {% endif %}
+
+  
+</li>
+{% endif %}
+
+<!-- ----------------User management--------------------- -->
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+      <i class="fas  fa-users mr-1"></i>
+      <p>
+        User Mangement
+
+        <i class="fas fa-angle-left right"></i>
+
+
+      </p>
+    </a>
+
+    <ul class="nav nav-treeview">
+      <li class="nav-item ml-3">
+        <a href="{% url 'admin_app:reviewer-index' %}" class="nav-link">
+          <i class="fas fa-xs fa-circle"></i>
+          <p>
+            Reviewer
+
+          </p>
+        </a>
+      </li>
+
+
+    </ul>
+
+    <ul class="nav nav-treeview">
+      <li class="nav-item ml-3">
+        <a href="{% url 'admin_app:normal-user-index' %}" class="nav-link">
+          <i class="fas fa-xs fa-circle"></i>
+          <p>
+            User
+
+          </p>
+        </a>
+      </li>
+
+
+    </ul>
+
+  </li>
+
+
+  <!-- ----------------------------------------------Authentication management----------------------------------------------------------- -->
+
+{% include "sidebar/includes/category.html" %}
+
+<!-- ----- ------------------------------------------Permission Management---------------------------------------------------->
+<li class="nav-item has-treeview">
+  <a href="#" class="nav-link">
+    <i class="fas  fa-user-lock mr-1"></i>
+    <p>
+      Permission Mangement
+
+      <i class="fas fa-angle-left right"></i>
+
+
+    </p>
+  </a>
+
+  
+
+      <ul class="nav nav-treeview">
+        <li class="nav-item ml-3">
+          <a href="{% url 'role_app:add_role' %}" class="nav-link">
+            <i class="fas fa-xs fa-circle"></i>
+            <p>
+              Add Role
+
+            </p>
+          </a>
+        </li>
+        <li class="nav-item ml-3">
+          <a href="{% url 'role_app:manage_role' %}" class="nav-link">
+            <i class="fas fa-xs  fa-circle "></i>
+            <p>
+              Manage Role/Permission
+
+            </p>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+
+
+
+  <!-- <ul class="nav nav-treeview">
+    <li class="nav-item ml-3">
+      <a href="#" class="nav-link">
+        <i class="fas  fa-user-check"></i>
+        <p>
+          Permission
+          <i class="fas fa-angle-left right"></i>
+
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item ml-3">
+          <a href="{% url 'role_app:add_permission' %}" class="nav-link">
+            <i class="far  fa-circle"></i>
+            <p>
+              Add Permission
+
+            </p>
+          </a>
+        </li>
+        <li class="nav-item ml-3">
+          <a href="{% url 'role_app:manage_permission' %}" class="nav-link">
+            <i class="far  fa-circle "></i>
+            <p>
+              Manage Permission
+
+            </p>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+
+  </ul> -->
+
+</li>
+
+
+<!-- ----------------------------------------------Authentication management----------------------------------------------------------- -->
+
+{% include "sidebar/includes/authentication.html" %}
+
+<!-- --------------------------------------------------------------- -->
+<!-- 
+<li class="nav-item has-treeview">
+  <a href="#" class="nav-link">
+    <i class="fas  fa-users mr-1"></i>
+    <p>
+      Settings
+
+      <i class="fas fa-angle-left right"></i>
+
+
+    </p>
+  </a>
+
+ 
+
+  <ul class="nav nav-treeview">
+    <li class="nav-item ml-3">
+      <a href="" class="nav-link">
+        <i class="fas fa-xs fa-circle"></i>
+        <p>
+          User
+
+        </p>
+      </a>
+    </li>
+
+
+  </ul> -->
+
+<!-- </li> -->
+<!-- <li class="nav-item">
+  <a href="" class="nav-link">
+    <i class="fas fa-user"></i>
+    <p>
+      Profile
+
+    </p>
+  </a>
+</li> -->
+{% comment %} <li class="nav-item has-treeview">
+  <a href="#" class="nav-link">
+    <i class="fas  fa-newspaper mr-1"></i>
+    <p>
+      Settings
+
+      <i class="fas fa-angle-left right"></i>
+
+
+    </p>
+  </a>
+
+  <ul class="nav nav-treeview">
+    <li class="nav-item ml-3">
+      <a href="{% url 'admin_app:notice-index' %}" class="nav-link">
+        <i class="fas fa-xs fa-circle"></i>
+        <p>
+          Notice
+
+        </p>
+      </a>
+    </li>
+
+
+  </ul>
+
+ 
+
+  
+</li> {% endcomment %}
+  <li class="nav-item">
+    <a href="{% url 'logout' %}" class="nav-link">
+      <i class="fas fa-sign-out-alt"></i>
+      <p>
+        Logout
+
+      </p>
+    </a>
+  </li>
+

@@ -1,0 +1,323 @@
+{% load static %} {% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{{ title }}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+ 
+        <script type="text/javascript" src="{% static 'flipbook/pdfjs-flipbook/js/jquery.fancybox.min.js' %}"></script>
+
+        <link rel="stylesheet"
+              type="text/css"
+              href="{% static 'css/journal_home.css' %}"/>
+        <!-- flipbook js -->
+        <link rel="stylesheet"
+              type="text/css"
+              href="{% static 'flipbook/pdfjs-flipbook/css/jquery.fancybox.min.css' %}"/>
+    </head>
+    <body>
+        <div id="header">
+        
+            <div>
+            
+              {% comment %} <marquee class ="mt-2" style="color:#743DB8;"><h4>JOURNAL MANAGEMENT SYSTEM</h4></marquee> {% endcomment %}
+            </div>
+            <header id="toggle-header">
+                <div class="container-fluid" style = "background-color:#743DB8;">
+                    <div class="row">
+                        <nav class="navbar navbar-expand-lg navbar-light">
+                            <button class="navbar-toggler  bg-light"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#navbartoggle"
+                                    aria-controls="navbartoggle"
+                                    aria-expanded="false"
+                                    aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbartoggle">
+                                <div class="col-md-4">
+                                    <a href="/">
+                                        <img class="rounded img-two" style="margin-right:500px"
+                                             src="{% static 'image/logo_placeholder.png' %}"
+                                             >
+                                    </a>
+                                </div>
+                            
+                                <div class="col-md-8" style="margin-left: 3%">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item active ">
+                                            <a class="nav-link" href="/"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#"><i class="fa fa-bandcamp"></i> About Us</a>
+                                        </li>
+                                        {% if request.user.is_authenticated %}
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="nav-item">
+                                          <a class="nav-link" href="{% url 'login' %}">     <i class="fa fa-sign-in"></i>  Login</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url 'user:register' %}"><i class="fa fa-user"></i> Register</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <div class="row">
+            <div class="col-md-3">
+              
+                {% comment %} <a href="#">
+                    <img class="rounded img-one"
+                         src=""
+                         alt="logo">
+                </a> {% endcomment %}
+            </div>
+            <div class="col-md-7 mt-4" id = "search_article">
+                <div class="card card-header"
+                     style="background-color: #743DB8;
+                            color:white;">Advanced Filter</div>
+                <div class="card card-body p-4">
+					<form method="get">
+						<div class="input-group">
+							{{ filter_form.form|crispy }}
+			  <div class="input-group-btn">
+				<button
+				  type="submit"
+				  class="btn"
+				  style="background-color: #743DB8; color: white;margin-top:2rem;margin-left:5px;"
+				>
+				  Search
+				</button>
+			  </div>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row"> 
+            <div class="col-md-4" style="margin-left:4rem;">
+                <ul class="list-group category_list">
+					<li
+						class="list-group-item active"
+						style="
+							background-color: #743DB8;
+							padding-right: 100px;
+						"
+					>
+						<strong> Journal Category </strong>
+					</li>
+					{% for category in category %}
+					<a href="">
+						<li class="list-group-item">{{category.name}}</li>
+					</a>
+
+					{% endfor %}
+          {% autoescape off %}
+            
+          {% endautoescape %}
+          
+				</ul>
+            </div>
+            <div class="col-md-7" style="position:relative">
+                {% if not published_articles %}
+                    <h5>
+                        <span style="margin-left:25%;">No articles found! Please search with appropriate keyword.</span>
+                    </h5>
+                {% endif %}
+                {% if published_articles %}
+                    <div class= "articles">
+                        <div class="card card-header mb-2"
+                             style="background-color: #743DB8;
+                                    color:white;">
+                            <strong>Journals articles List</strong>
+                        </div>
+                        {% for article in published_articles  %}
+                        <div class="row" id="card-content">
+
+                        
+                          <div class="col-md-4">
+                            <a data-fancybox
+                            data-type="iframe"
+                            data-src="/viewer/viewer.html?file={{ article.file.url }}"
+                            href="javascript:;">
+                            {% if article.file_image %}
+                            <img class=" mt-1 d-md-flex my-2" src="{{article.file_image.url}}" 
+                            style="border-radius:15px;
+                            height: 133px;
+                            width: 200px;
+                            box-shadow: 2px 4px 10px rgba(0,0,0,0.3);" 
+                            alt="image">
+                            {% else %}
+                            <img class=" mt-1 d-md-flex my-2" src="{% static 'image/document_static.png' %}" 
+                            style="border-radius:15px;
+                            height: 133px;
+                            width: 200px;
+                            box-shadow: 2px 4px 10px rgba(0,0,0,0.3);" 
+                            alt="image">
+                            {% endif %}
+
+                         </a>
+                                                      
+                          </div>
+                          <div class="col-md-8">
+                            <div  class="d-flex flex-column mt-1">
+                              <div class="p-2">
+                                  <a href="">{{ article.title }}</a>
+                              </div>
+                              <div class="p-2">
+                                  <strong>Author :</strong>{{ article.user.normaluser.full_name }}
+                                  <span class="ml-4">
+                                      <strong>Category:</strong> <span class="badge" style="background-color:#743DB8;color:white;">{{ article.category.name }}</span>
+                                  </span>
+                              </div>
+                              <div class="p-2">
+                                  {% comment %} <a data-fancybox
+                                     data-type="iframe"
+                                     class="btn btn-outline-primary"
+                                     data-src="/viewer/viewer.html?file={{ article.file.url }}"
+                                     href="javascript:;">
+                                      PDF
+                                  </a> {% endcomment %}
+                                  <!-- <a href="{{article.file.url}}" class="btn btn-outline-primary">PDF</a> -->
+                                  <span>
+                                      <strong>Published Date:</strong> {{ article.updated_at }}
+                                  </span>
+                              </div>
+                          </div>
+                          </div>
+                        </div>
+                        
+                            <br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <nav aria-label="Page navigation example">
+      {% if published_articles.has_other_pages %}
+      <ul class="pagination justify-content-center">
+        {% if published_articles.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ published_articles.previous_page_number }}" tabindex="-1">Prev</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Prev</span>
+        </li>
+        {% endif %}
+        {% for i in published_articles.paginator.page_range %}
+        {% if published_articles.number == i %}
+        <li class="page-item active">
+          <span class="page-link">
+            {{ i }}
+            <span class="sr-only">(current)</span>
+          </span>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+        </li>
+        {% endif %}
+
+        {% endfor %}
+        {% if published_articles.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ published_articles.next_page_number }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+      </ul>
+      {% endif %}
+    </nav>
+	<br>
+
+
+<!-- Footer -->
+
+    <style type = "text/css">
+
+      #card-content{
+        border-radius:30px;
+        background-color:#FFFFFF;
+        border-radius: 15px;
+          margin: 0 auto;
+          box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+          transition: .5s;
+      }
+         /*for mobile*/
+      @media (max-width: 991px	) {
+          .articles {
+            width: 100%;
+            
+          }
+          .category_list{
+              width: 100%;
+          }
+        }
+        /* for medium */
+        @media (min-width: 992px) {
+          #search_article {
+              margin-left:10.5rem;
+          }
+          .category_list{
+              margin-left:10px;
+          }
+        }
+      
+    </style>
+    {% if notice %}
+  
+    <!-- Modal -->
+    <div class="modal fade  bd-example-modal-lg" id="noticeModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{notice.title}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
+             <span aria-hidden="true">&times;</span> 
+            </button>
+          </div>
+          <div class="modal-body">
+    
+            <img src="{{notice.file.url}}" style="width:100%" class = "mt-3" alt="">
+    
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <script type="text/javascript">
+  $(window).on('load', function () {
+    $('#noticeModal').modal('show');
+  });
+</script>
+</body>
+</html>
+
+{% comment %} footer dump {% endcomment %}
+
