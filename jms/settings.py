@@ -88,7 +88,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                   # ===============user log middleware=================
-                # 'apps.log_history.user_log_middleware.UserLoggingMiddleware',
+                'apps.log_history.user_log_middleware.UserLoggingMiddleware',
             ],
         },
     },

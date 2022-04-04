@@ -60,11 +60,11 @@ def dashboard(request):
     unpublish_articles_by_admin = Article.objects.filter(
         status=STATUS_REVIEWER_PUBLISHED)
 
-    '''I am using datetimefield instead of datefield so filter in this way'''
+    '''I am using datetimefield instead of datefield so filter in following way'''
     today_publish_by_admin = Article.objects.filter(
         status=STATUS_ADMIN_PUBLISHED, updated_at__gte=today_start).filter(updated_at__lte=today_end)
 
-    # --------For normal user dashboard
+    # ------------------------------For normal user dashboard----------------------
     total_user_articles_submitted = Article.objects.filter(user=request.user)
     total_user_article_accepted = Article.objects.filter(
         user=request.user, status=STATUS_ADMIN_PUBLISHED)
@@ -73,7 +73,7 @@ def dashboard(request):
     total_user_article_under_review = Article.objects.filter(
         user=request.user, status=STATUS_UNDER_REVIEW)
 
-    # ----------------------for reviewer dashboard
+    # ----------------------------------For reviewer dashboard----------------------
     today_accepted_article_by_reviewer = Article.objects.filter(
         status=STATUS_ACCEPTED, updated_at__gte=today_start).filter(updated_at__lte=today_end)
     today_rejected_article_by_reviewer = Article.objects.filter(

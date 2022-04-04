@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from apps.permissions.models import CustomUser
 
 class UserLog(models.Model):
     ACTION_TYPE_CREATE = 1
