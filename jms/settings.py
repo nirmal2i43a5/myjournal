@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 DEFAULT_APPS = [
+    # 'material',
+    # 'material.admin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,20 +45,19 @@ CUSTOM_APPS = [
     'apps.admin_user.apps.AdminUserConfig',
     'apps.user.apps.UserConfig',
     'apps.reviewer.apps.ReviewerConfig',
-      'apps.log_history.apps.LogHistoryConfig',
+    'apps.log_history.apps.LogHistoryConfig',
     'viewer.apps.ViewerConfig',
     'apps.permissions.apps.PermissionsConfig',
-     'apps.authentication.apps.AuthenticationConfig',
-    
+    'apps.authentication.apps.AuthenticationConfig',
     
 ]
 
 THIRD_PARTY_APPS = [
-     'crispy_forms',
+    'crispy_forms',
     'django_countries',
-    # 'django_extensions',
-     'django_filters',
-        'rest_framework',
+    'django_extensions',
+    'django_filters',
+    'rest_framework',
     'rest_framework_datatables',
     
 ]
@@ -88,7 +89,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                   # ===============user log middleware=================
-                'apps.log_history.user_log_middleware.UserLoggingMiddleware',
+                # 'apps.log_history.user_log_middleware.UserLoggingMiddleware',
             ],
         },
     },
@@ -184,16 +185,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 LOGIN_EXEMPT_URLS = (
+    r'^accounts/login/$',
+    r'^admin/$',
     r'^logout/$',
-      r'^user/register/$',
-       r'^$',
-        # r'^/media/^$',
-        #  r'^viewer/viewer.html/$',
-     
-       
+    r'^user/register/$',
     r'^password/reset/.*$',
     r'^reset/.*$',
 )
@@ -202,8 +200,8 @@ LOGIN_EXEMPT_URLS = (
 # 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER='nirmalpandey27450112@gmail.com'
-EMAIL_HOST_PASSWORD = 'xrevudfkvavqwksx'
+EMAIL_HOST_USER = 'f8d0af8c207f90'
+EMAIL_HOST_PASSWORD = '028266212e4e4c'
+EMAIL_PORT = '2525'

@@ -6,9 +6,11 @@
 <aside class="main-sidebar sidebar-light elevation-4" style="background-color: white;border-radius:30px;">
   <!-- style="background-color: #004de6;">-->
   <!-- Brand Logo -->
-  <a href="{% url 'home' %}">
+  <a href="{% url 'first_page' %}">
     <div class="user-panel ml-3 pb-1 mr-2 mt-1 d-flex">
-      <img src="https://4m4you.com/wp-content/uploads/2020/06/logo-placeholder.png" style="width:191px;height:65px;" class="img-rectangle ">
+      <img src="{% static 'image/journal.png' %}" style="width: 95px;
+      height: 71px;
+      margin-left: 35px;" class="img-rectangle ">
       <span class="brand-text font-weight-light  ml-1 text-white">{{ detail.site_title }}</span>
     </div>
   </a>
@@ -25,16 +27,7 @@
       </div>
 
       <div class="info">
-
-
         <a href="" class="d-block">{{ request.user.username }}</a>
-
-
-       
-
-        
-
-
       </div>
     </div>
 

@@ -13,7 +13,7 @@ STATUS_UNSUBMITTED = 'Unsubmitted'
 STATUS_UNDER_REVIEW = 'Under Review'
 STATUS_REJECTED = 'Rejected'
 STATUS_ACCEPTED = 'Accepted'
-STATUS_REVIEWER_PUBLISHED = 'Reviewer Published'
+STATUS_REVIEWER_PUBLISHED = 'Reviewer Published' #publish to admin
 STATUS_ADMIN_PUBLISHED = 'Admin Published'
 STATUS_CHOICES = [
     (STATUS_UNSUBMITTED, 'Unsubmitted'),
@@ -87,7 +87,7 @@ class Article(models.Model):
         verbose_name_plural = _("articles")
         permissions = (
             ("view_publish_articles_to_sites", "Can view published articles to sites"),
-            ("publish_articles_to_sites", "Can Published articles to pites"),
+            ("publish_articles_to_sites", "Can Published articles to sites"),
               ("article_publish_to_admin_by_reviewer", "Can publish  article to admin"),
                  ("check_article", "Can check  user articles"),
             ("each_article_view", "Can  view each articles "),#for admin sides

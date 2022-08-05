@@ -45,9 +45,9 @@
                             </button>
                             <div class="collapse navbar-collapse" id="navbartoggle">
                                 <div class="col-md-4">
-                                    <a href="/">
-                                        <img class="rounded img-two" style="margin-right:500px"
-                                             src="{% static 'image/logo_placeholder.png' %}"
+                                    <a href="{% url 'first_page' %}">
+                                        <img class="rounded img-two" style="margin-right:610px; width: 90px;"
+                                             src="{% static 'image/journal.png' %}"
                                              >
                                     </a>
                                 </div>
@@ -55,7 +55,7 @@
                                 <div class="col-md-8" style="margin-left: 3%">
                                     <ul class="navbar-nav">
                                         <li class="nav-item active ">
-                                            <a class="nav-link" href="/"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                                            <a class="nav-link" href="{% url 'home' %}"><i class="fa fa-home"></i> Dashboard <span class="sr-only">(current)</span></a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="#"><i class="fa fa-bandcamp"></i> About Us</a>

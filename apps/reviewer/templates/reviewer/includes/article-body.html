@@ -1,7 +1,7 @@
 
     {% load static %}
     <div class="col-md-3">
-        <a href="{% url 'reviewer:check_user_article' article.pk %}">
+        <a href="{% url 'reviewer:view-accepted-user-articles' article.pk %}">
   
           <div class="card">
             <div class="card-body">
@@ -18,7 +18,7 @@
                 {% if accepted_articles %}
                 <hr>
 
-          <a href="{% url 'reviewer:publish_to_admin' article.user.id article.pk %}" class="btn btn-info">Publish to Admin</a>                  
+          {# <a href="{% url 'reviewer:publish_to_admin' article.user.id article.pk %}" class="btn btn-info">Publish to Admin</a>           #}       
                 {% endif %}
                   
                

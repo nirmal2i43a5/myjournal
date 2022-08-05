@@ -140,8 +140,8 @@ def view_user_under_review_articles(request,pk):
 
 
 
-def view_user_accepted_articles(request,pk):
-    accepted_articles = Article.objects.filter(status = STATUS_ACCEPTED,user__pk = pk)
+def view_user_accepted_articles_list(request,pk):
+    accepted_articles = Article.objects.filter(status = STATUS_REVIEWER_PUBLISHED, user__pk = pk)
     user = get_object_or_404(CustomUser, pk = pk)
     # articles = user.article_set.all()
     # checked_articles = []
@@ -197,6 +197,16 @@ def check_user_article(request,pk):
     return render(request,'reviewer/check-user-article.html',context)
 
 
+@permission_required('user.check_article', raise_exception=True)
+def view_accepted_user_article(request,pk):
+    article = get_object_or_404(Article, pk = pk)
+    context = {
+        'title':'Article Check',
+        'article':article,
+    }
+    return render(request,'reviewer/view-accepted-user-article.html',context)
+
+
 
 @permission_required('user.add_feedback', raise_exception=True)
 def article_feedback(request):
@@ -208,7 +218,7 @@ def article_feedback(request):
     article_object = get_object_or_404(Article,pk = articleId)
     
     if status == 'Accepted':
-        article_object.status = STATUS_ACCEPTED 
+        article_object.status = STATUS_REVIEWER_PUBLISHED 
         article_object.save()
     elif status == 'Rejected':
         # send emai with annotate pdf
