@@ -99,7 +99,7 @@ def article_under_review(request):
 
 def accepted_article_list(request):
     articles = Article.objects.filter(user = request.user)
-    accepted_articles = Article.objects.filter(status = STATUS_ACCEPTED,user = request.user)
+    accepted_articles = Article.objects.filter(status = STATUS_ADMIN_PUBLISHED, user = request.user)
     accepted_feedback = []
     for article in articles:
         article_obj = get_object_or_404(Article, pk = article.pk)

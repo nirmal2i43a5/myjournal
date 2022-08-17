@@ -19,17 +19,26 @@ def first_page(request):
     published_articles = Article.objects.filter(
         status=STATUS_ADMIN_PUBLISHED).order_by('-updated_at')
     filter_form = ArticleFilter()
+    # print(request.GET['title'])
     filter_articles = ArticleFilter(
         request.GET, queryset=published_articles).qs
-    context = {
-        'title': 'Journal Management System',
-        'category': Category.objects.all(),
-        'published_articles': filter_articles,
-        'filter_form': filter_form,
+    if filter_articles:
+        context = {
+            'title': 'Journal Management System',
+            'category': Category.objects.all(),
+            'published_articles': filter_articles,
+            'filter_form': filter_form,
+        }
+    # article_list = ArticleFilter(request.GET, queryset=published_articles)
+    else:
+        context = {
+            'title': 'Journal Management System',
+            'category': categories,
+            'published_articles': published_articles,
+            'filter_form': filter_form,
+            'notice': Notice.objects.filter(status=True).first(),
 
-
-    }
-
+        }
     page = request.GET.get('page', 1)
     paginator = Paginator(published_articles, 5)
     try:
@@ -38,15 +47,7 @@ def first_page(request):
         published_articles = paginator.page(1)
     except EmptyPage:
         published_articles = paginator.page(paginator.num_pages)
-    # article_list = ArticleFilter(request.GET, queryset=published_articles)
-    context = {
-        'title': 'Journal Management System',
-        'category': categories,
-        'published_articles': published_articles,
-        'filter_form': filter_form,
-        'notice': Notice.objects.filter(status=True).first(),
-
-    }
+        
     return render(request, 'home.html', context)
 
 

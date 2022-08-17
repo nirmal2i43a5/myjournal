@@ -1,11 +1,13 @@
-private/
-notes/
-migrations/
-# custom ignore
-*.pkl
-
-# ignore sqlite file
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
 db.sqlite3
+media
+**/migrations/*
+!**/migrations/__init__.py
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

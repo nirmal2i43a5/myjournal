@@ -11,29 +11,34 @@ if hasattr(settings, 'LOGIN_EXEMPT_URLS'):
 
 
 class LoginRequiredMiddleware:
-    
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         response = self.get_response(request)
+        print("request source:::", request.META['HTTP_USER_AGENT'])
         return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         assert hasattr(request, 'user')
         path = request.path_info.lstrip('/')
+        print(path)
+
         url_is_exempt = any(url.match(path) for url in EXEMPT_URLS)
+        print("url is exempt: ", url_is_exempt)
+
         if path == reverse('logout').lstrip('/'):
             logout(request)
-        if request.user.is_authenticated and url_is_exempt:
-            # return redirect(settings.LOGIN_REDIRECT_URL)
-            return None
-        elif request.user.is_authenticated or url_is_exempt:
-            return None
+
+        if not request.user.is_authenticated:
+            if not url_is_exempt:
+                return redirect(settings.LOGIN_URL)
+        # elif request.user.is_authenticated or url_is_exempt:
+        #     return None
         
-        elif not request.user.is_authenticated:
-            if url_is_exempt:
-                return None
+        # elif not request.user.is_authenticated:
+        #     if url_is_exempt:
+        #         return None
             
-        else:
-            return redirect(settings.LOGIN_URL)
+        # else:
+        #     return redirect(settings.LOGIN_URL)

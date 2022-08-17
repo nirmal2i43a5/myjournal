@@ -21,20 +21,25 @@ from django.urls import path,include
 from jms.views import *
 from django.contrib.auth import views as auth_views
 
+from django.contrib import admin
+
+admin.autodiscover()
+admin.site.enable_nav_sidebar = False
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('viewer/',include('viewer.urls',namespace='viewer')),
-       path('api/v1/', include('jms.api', namespace='api')),
-     path('accounts/login/', user_login, name='login'),
+    path('api/v1/', include('jms.api', namespace='api')),
+    path('accounts/login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
     path('dashboard/',dashboard, name = 'home'),
-      path('',first_page, name = 'first_page'),
-     path('user/',include('apps.user.urls',namespace='user')),
-       path('reviewer/',include('apps.reviewer.urls',namespace='reviewer')),
-        path('',include('apps.admin_user.urls',namespace='admin_app')),
-        #  path('authentication/',include('apps.authentication.urls',namespace='authentication')),
-        path('permission/',include('apps.permissions.urls',namespace='role_app')),
-          path('',include('apps.authentication.urls')),
+    path('',first_page, name = 'first_page'),
+    path('user/',include('apps.user.urls',namespace='user')),
+    path('reviewer/',include('apps.reviewer.urls',namespace='reviewer')),
+    path('',include('apps.admin_user.urls',namespace='admin_app')),
+    #  path('authentication/',include('apps.authentication.urls',namespace='authentication')),
+    path('permission/',include('apps.permissions.urls',namespace='role_app')),
+        path('',include('apps.authentication.urls')),
           
               #For resetting password via email follow below four link 
     path('password/reset/',auth_views.PasswordResetView.as_view(template_name = 'passwordreset/password_reset_email.html'), 
