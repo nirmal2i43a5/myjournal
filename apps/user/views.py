@@ -3,8 +3,7 @@ from .forms import *
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, permission_required  
 from django.contrib import messages
-
-
+from django.views.generic import DetailView
 
 def user_register(request):
     auth_form = CustomUserForm()
@@ -63,19 +62,22 @@ def user_register(request):
         
     return render(request,'users/registers.html',context)
 
-
-
-
 def upload_article(request):
     form = PaperUploadForm()
     if request.method == 'POST':
         form = PaperUploadForm(request.POST,request.FILES)
-        form = form.save(commit=False)
-        form.user = request.user
-        form.status = STATUS_UNDER_REVIEW
-        form.save()
-        messages.success(request, "Successfully Uploaded Article.")
-        return redirect('user:article-under-review')
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.status = STATUS_UNDER_REVIEW
+            obj.save()
+            form.save_m2m()
+            messages.success(request, "Article was uploaded successfully. You article will be reviewed and published with in 24 hours. Thank You!")
+            return redirect('user:article-under-review')
+
+        else:
+            print(form.errors)
+            messages.error(request, "File validation didnot match!")
         
     context = {
         'title':'Upload Paper',
@@ -84,6 +86,41 @@ def upload_article(request):
     return render(request,'users/paper_upload.html',context)
 
 
+def article_update_view(request, pk):
+    article_instance = get_object_or_404(Article, id=pk)
+    form = PaperUploadForm(instance=article_instance)
+    if request.method == 'POST':
+        form = PaperUploadForm(request.POST, instance=article_instance)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.status = STATUS_UNDER_REVIEW
+            obj.save()
+            form.save_m2m()
+            messages.success(request, ('Article was updated successfully.'))
+            return redirect('user:article-under-review')
+        else:
+            print("Error Occured::: ",form.errors)
+            messages.error(request, "File validation didnot match!")
+            return render(request, 'users/paper_upload.html',{'form':form})
+    context = {
+        'form':form,    
+        'title':'Update Paper' ,
+        'article': article_instance,
+    }
+    return render(request,'users/paper_upload.html',context)
+
+def article_delete_view(request, pk):
+    article = get_object_or_404(Article, id=pk)
+    if request.method == 'POST':
+        article.delete()
+        messages.success(request, ('Article was deleted successfully.'))
+        return redirect('user:article-under-review')
+    context = {
+        'title': 'Delete Paper',
+        'article':article,
+    }
+    return render(request,'users/paper_upload.html',context=context)
 
 # This is the article under review 
 def article_under_review(request):
@@ -143,5 +180,23 @@ def article_view(request,pk):
     }
     return render(request,'users/article-view.html',context)
 
+class ArticleDetailView(DetailView):
+    model=Article
+    template_name='users/article_detail.html'
+    def get_context_data(self,*args, **kwargs):
+        self.object.views.add(self.request.user)
+        context=super().get_context_data(*args, **kwargs)
+        context['article']= context.get('object')
+        return context
 
-
+def article_detail_view(request, pk):
+    article = get_object_or_404(Article, pk = pk)
+    # print(article.views.id, '::::::::')
+    article.views.add(request.user)
+    article.save()
+    context = {
+        'title':'Article Detail View',
+        'article':article,
+        'logged_user': request.user,
+    }
+    return render(request,'users/article_detail.html',context)

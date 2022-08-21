@@ -1,36 +1,27 @@
+{% load static %}
+<div class="col-md-3">
+    <a href="{% url 'admin_app:article_view' article.pk %}">
 
-    {% load static %}
-    <div class="col-md-3">
-  
-          <div class="card">
-        <a href="{% url 'admin_app:article_view' article.pk %}">
-
-            <div class="card-body">
-  
-              <img src="{% static 'image/document_static.png' %}" style=" width:100%" alt="">
-              <hr>
-              <div class="d-flex flex-column bd-highlight">
-                <div class="p-2 bd-highlight"><strong> Category : </strong>
-                  <div class="badge badge-info">{{article.category}}</div>
-                </div>
-                <div class="p-2 bd-highlight"> <strong>Created At : </strong>{{article.created_at|date:'d M, Y'}}</div>
-                <div class="p-2 bd-highlight"> <strong>Reviewed By : </strong>{{article.reviewed_by}}</div>
-
-                
-               
-               
-              </div>
-  
-  
-  
+      <div class="card">
+        <div class="card-body">
+          {% if article.file_image %}
+                <img src="{{article.file_image.url}}" style=" width:100%" alt="image">
+                {% else %}
+                <img src="{% static 'image/Pdf-2127829.png' %}" style=" width:100%" alt="image">
+          {% endif %}
+          <hr>
+          <div class="d-flex flex-column bd-highlight">
+            <div class="p-2 bd-highlight"><strong> Title : </strong>
+              <div class="badge badge-info">{{article.title}}</div>
             </div>
-        </a>
-
-           
-              
+            <div class="p-2 bd-highlight"><strong> Category : </strong>
+              <div class="badge badge-info">{{article.category}}</div>
+            </div>
+            <div class="p-2 bd-highlight"> <strong>Created At : </strong>{{article.created_at|date:'d M, Y'}}</div>
+            <div class="p-2 bd-highlight"> <strong>Reviewed By : </strong>{{article.reviewed_by}}</div>
           </div>
-
-        
-  
+        </div>
       </div>
-  
+    </a>
+</div>
+       

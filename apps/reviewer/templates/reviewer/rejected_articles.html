@@ -32,7 +32,7 @@
             <input class="form-control my-2" id="myInput" type="text" placeholder="Search with Category..">
             <div class="row" id="filter_div">
                 {% for article in rejected_articles %}
-                {% include "reviewer/includes/article-body.html" %}
+                {% include "reviewer/includes/accepted-article-body.html" %}
                 {% endfor %}
             </div>
         </div>

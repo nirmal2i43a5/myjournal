@@ -34,12 +34,13 @@ urlpatterns = [
     path('logout/', user_logout, name='logout'),
     path('dashboard/',dashboard, name = 'home'),
     path('',first_page, name = 'first_page'),
+    path('tag/<str:tag_name>/articles',TagArticlesListView.as_view(), name = 'tag_articles'),
     path('user/',include('apps.user.urls',namespace='user')),
     path('reviewer/',include('apps.reviewer.urls',namespace='reviewer')),
     path('',include('apps.admin_user.urls',namespace='admin_app')),
     #  path('authentication/',include('apps.authentication.urls',namespace='authentication')),
     path('permission/',include('apps.permissions.urls',namespace='role_app')),
-        path('',include('apps.authentication.urls')),
+    path('',include('apps.authentication.urls')),
           
               #For resetting password via email follow below four link 
     path('password/reset/',auth_views.PasswordResetView.as_view(template_name = 'passwordreset/password_reset_email.html'), 
@@ -55,7 +56,8 @@ urlpatterns = [
 	 #<uidb64> helps to know user who request for password
 	path('reset/complete/',auth_views.PasswordResetCompleteView.as_view(template_name='passwordreset/password_reset_complete.html'),
 		 name="password_reset_complete"),
-     
+
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

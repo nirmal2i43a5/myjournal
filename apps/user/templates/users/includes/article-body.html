@@ -5,12 +5,18 @@
           <div class="card">
             <div class="card-body">
               <a href="{% url 'user:article-view' article.pk %}">
-  
-              <img src="{% static 'image/document_static.png' %}" style=" width:100%" alt="">
-        </a>
-
+              {% if article.file_image %}
+                <img src="{{article.file_image.url}}" style=" width:100%" alt="image">
+                {% else %}
+                <img src="{% static 'image/Pdf-2127829.png' %}" style=" width:100%" alt="image">
+              {% endif %}
+              </a>
               <hr>
               <div class="d-flex flex-column bd-highlight">
+                
+                <div class="p-2 bd-highlight"><strong>Title : </strong>
+                  <div class="badge badge-info">{{ article.title }}</div>
+                </div>
                 <div class="p-2 bd-highlight"><strong> Category : </strong>
                   <div class="badge badge-info">{{article.category}}</div>
                 </div>

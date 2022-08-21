@@ -122,7 +122,7 @@
   }
 
   .list-group {
-    margin-right: 25%;
+    /* margin-right: 25%; */
     max-height: 300px;
     margin-bottom: 10px;
     overflow: scroll;

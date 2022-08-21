@@ -22,12 +22,10 @@
         <link rel="stylesheet"
               type="text/css"
               href="{% static 'flipbook/pdfjs-flipbook/css/jquery.fancybox.min.css' %}"/>
-  <script src="https://cdn.tailwindcss.com"></script>
-        
     </head>
     <body>
         <div id="header">
-            <header id="toggle-header" style="margin-top: -10px;">
+            <header id="toggle-header" style="margin-top: -20px; margin-bottom: 20px;">
                 <div class="container-fluid" style = "background-color:#743DB8;">
                     <div class="row">
                         <nav class="navbar navbar-expand-lg navbar-light">
@@ -80,99 +78,44 @@
                 </div>
             </div>
         </header>
-        <div class="row">
-            <div class="col-sm-7 mt-4 mb-4" id = "search_article" style="margin-left: 34rem;">
-                <div class="card card-header"
-                     style="background-color: #743DB8;
-                            color:white;">Advanced Filter</div>
-                <div class="card card-body p-4">
-                <form method="get">
-                  <div class="input-group">
-                    {{ filter_form.form|crispy }}
-			              <div class="input-group-btn">
-				              <button type="submit" class="btn" style="background-color: #743DB8; color: white;margin-top:2rem;margin-left:5px;"> Search </button>
-			              </div>
-						      </div>
-                  
-					      </form>
-              </div>
-            </div>
-        </div>
-      <hr>
+        <hr>
         <div class="row"> 
-          <div class="col-md-3" style="margin-left:4rem;">
-            <ul class="list-group category_list">
-                <li class="list-group-item active" style="background-color: #743DB8; padding-right: 100px; ">
-                  <strong> Search Tags </strong>
-                </li>
-                {% for article in published_articles  %}
-                  {% for tag in article.tags.all %}
-                    <a  class="list-group-item badge text-uppercase text-white" style="background-color: #5E72E4;" href="{% url 'tag_articles' tag_name=tag.name %}"> {{ tag.name }}</a>
-                  {% endfor %}
-                {% endfor %}  
-              </ul>
-            </div>
-
-            <div class="col-sm-7" style="position:relative;">
-                {% if not published_articles %}
-                    <h5>
-                        <span style="margin-left:25%;">No articles found! Please search with appropriate keyword.</span>
-                    </h5>
-                {% endif %}
-                {% if published_articles %}
+            
+            {% autoescape off %}
+            {% endautoescape %}
+            <div class="col-sm-8" style="position:relative; margin-left: 22rem;">
                     <div class= "articles">
                         <div class="card card-header mb-2" style="background-color: #743DB8; color:white;">
-                            <strong>Journals articles List</strong>
-                        </div>
-                        {% for article in published_articles  %}
-                        <div class="row" id="card-content">
-                          <div class="col-md-4">
-                            <a href="{% url 'user:article_detail' article.pk %}">
-                            {% if article.file_image %}
-                            <img class=" mt-1 d-md-flex my-2" src="{{article.file_image.url}}" 
-                            style="border-radius:15px;
-                            height: 133px;
-                            width: 200px;
-                            box-shadow: 2px 4px 10px rgba(0,0,0,0.3);" 
-                            alt="image">
-                            {% else %}
-                            <img class=" mt-1 d-md-flex my-2" src="{% static 'image/Pdf-2127829.png' %}" 
-                            style="border-radius:15px;
-                            height: 133px;
-                            width: 200px;
-                            box-shadow: 2px 4px 10px rgba(0,0,0,0.3);" 
-                            alt="image">
-                            {% endif %}
+                            <strong>
+                              {{ article.title }} &nbsp;&nbsp;&nbsp;&nbsp; 
+                              <i class="fa fa-eye"></i>: {{ article.total_views }} Views &nbsp;&nbsp;&nbsp;&nbsp;
+                              <a href="{{ article.file.url }}"><i class="fa fa-cloud-download" aria-hidden="true" style="color: white;"> <strong>Click here to Download!</strong></i></a> &nbsp;&nbsp;&nbsp;&nbsp;
+                            </strong>
 
-                         </a>
-                                                      
+                        </div>
+
+                        <div class="row" id="card-content">
+                          <div class="col-lg-12">
+                            <iframe id = "pdf-annotate2" src="/viewer/viewer.html?file={{article.file.url}}&userId={{article.user.pk}}&articleId={{article.pk}}" width="100%" height="700px" frameborder="0"></iframe>      
                           </div>
                           <div class="col-md-7">
                             <div  class="d-flex flex-column mt-1">
                               <div class="p-2">
-                                  <a href="{% url 'user:article_detail' article.pk %}">{{ article.title }}</a>
-                                  <strong>Total Views:</strong> <span class="badge" style="background-color:#743DB8;color:white;">{{ article.total_views }}</span>
+                                <strong>Author:</strong> <span class="badge" style="background-color:#743DB8;color:white;"> {{ article.user.normaluser.full_name }}</span><br>
                               </div>
                               <div class="p-2">
-                                  <strong>Author :</strong>{{ article.user.normaluser.full_name }}
-                                  <span class="ml-4">
-                                      <strong>Category:</strong> <span class="badge" style="background-color:#743DB8;color:white;">{{ article.category.name }}</span><br>
-                                      <strong>Description:</strong> <span class="badge" style="background-color:#743DB8;color:white;">{{ article.description|safe |truncatechars:15}}</span>
-                                  </span>
+                                <strong>Category:</strong> <span class="badge" style="background-color:#743DB8;color:white;"> {{ article.category.name }}</span><br>
                               </div>
                               <div class="p-2">
-                                  {% comment %} <a data-fancybox
-                                     data-type="iframe"
-                                     class="btn btn-outline-primary"
-                                     data-src="/viewer/viewer.html?file={{ article.file.url }}"
-                                     href="javascript:;">
-                                      PDF
-                                  </a> {% endcomment %}
+                                <strong>Description:</strong> <span class="badge" style="background-color:#743DB8;color:white;"> {{ article.description|safe}}</span>
+                              </div>
+                              <div class="p-2">
+                                <strong>Tags:</strong> <span class="badge" style="background-color:#743DB8;color:white;"> {{ article.tags.name|safe}}</span>
+                              </div>
+                              <div class="p-2">
                                   <!-- <a href="{{article.file.url}}" class="btn btn-outline-primary">PDF</a> -->
                                   <span>
-                                      <strong>Published By:</strong> {{ article.user }} &nbsp;&nbsp;
-                                      <!-- <strong>Reviewed By:</strong> {{ article.reviewed_by }}<br> -->
-                                      <strong>Published At:</strong> {{ article.updated_at }}
+                                      <strong>Published Date:</strong><span class="badge" style="background-color:#743DB8;color:white;"> {{ article.updated_at }}</span>
 
                                   </span>
                               </div>
@@ -182,51 +125,11 @@
                         
                             <br>
                           
-                        {% endfor %}
                     </div>
-                {% endif %}
+
             </div>
         </div>
     </div>
-    <nav aria-label="Page navigation example">
-      {% if published_articles.has_other_pages %}
-      <ul class="pagination justify-content-center">
-        {% if published_articles.has_previous %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ published_articles.previous_page_number }}" tabindex="-1">Prev</a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-          <span class="page-link">Prev</span>
-        </li>
-        {% endif %}
-        {% for i in published_articles.paginator.page_range %}
-        {% if published_articles.number == i %}
-        <li class="page-item active">
-          <span class="page-link">
-            {{ i }}
-            <span class="sr-only">(current)</span>
-          </span>
-        </li>
-        {% else %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-        </li>
-        {% endif %}
-
-        {% endfor %}
-        {% if published_articles.has_next %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ published_articles.next_page_number }}">Next</a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-          <span class="page-link">Next</span>
-        </li>
-        {% endif %}
-      </ul>
-      {% endif %}
-    </nav>
 	<br>
 
 

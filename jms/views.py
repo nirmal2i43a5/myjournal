@@ -12,12 +12,82 @@ from apps.user.filters import ArticleFilter
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
+from django.db.models import Q, Count
+from taggit.models import Tag
+from django.views.generic import (
+    DetailView,
+    ListView,
+)
 
+class TagArticlesListView(ListView):
+    """
+        List articles related to a tag.
+    """
+    model = Article
+    paginate_by = 12
+    context_object_name = 'published_articles'
+    template_name = 'home.html'
 
+    def get_queryset(self):
+        """
+            Filter Articles by tag_name
+        """
+
+        tag_name = self.kwargs.get('tag_name', '')
+
+        if tag_name:
+            published_articles = Article.objects.filter(Q(tags__name__in=[tag_name]), Q(status= STATUS_ADMIN_PUBLISHED)).order_by('-created_at')
+
+            if not published_articles:
+                messages.error(self.request, f"No Results for '{tag_name}' tag")
+                return published_articles
+            else:
+                messages.success(self.request, f"Results for '{tag_name}' tag")
+                return published_articles
+        else:
+            messages.error(self.request, "Invalid tag")
+            return []
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(TagArticlesListView, self).get_context_data(*args,**kwargs)
+        tag_name = self.kwargs.get('tag_name', '')
+        context['published_articles'] = Article.objects.filter(Q(tags__name__in=[tag_name]), Q(status= STATUS_ADMIN_PUBLISHED))
+        context['filter_form']= ArticleFilter()
+        # context['logged_user'] = self.request.user,
+        return context
+
+# def tag_article(request):
+#     tag_name = Tag.objects.all()
+#     if tag_name:
+#         published_articles = Article.objects.filter(tags__name__in=[tag_name], status= STATUS_ADMIN_PUBLISHED)
+#         if not published_articles:
+#                 messages.error(request, f"No Results for '{tag_name}' tag")
+#                 return published_articles
+#         else:
+#             messages.success(request, f"Results for '{tag_name}' tag")
+#             return published_articles
+#     else:
+#         messages.error(request, "Invalid tag")
+#     context = {
+#         'filter_form': ArticleFilter(),
+#         'published_articles': published_articles,
+#     }
+#     return render(request, 'home.html', context)
+    
+# assignments = assignments.annotate(
+#         assignment_status = Subquery(
+#             AssignmentSubmission.objects.filter(assignment=OuterRef("id")).values_list('status', flat=True)
+#         ),
+#         )
 def first_page(request):
     categories = Category.objects.all()
-    published_articles = Article.objects.filter(
-        status=STATUS_ADMIN_PUBLISHED).order_by('-updated_at')
+    tags = Tag.objects.all()
+    published_articles = Article.objects.prefetch_related('tags').filter(status=STATUS_ADMIN_PUBLISHED).annotate(
+        total_views = Count('views')
+    ).order_by('-total_views')
+
+    # test = Article.objects.prefetch_related('tags').all()
+    # print("fetched tags: ", test)
     filter_form = ArticleFilter()
     # print(request.GET['title'])
     filter_articles = ArticleFilter(
@@ -27,16 +97,20 @@ def first_page(request):
             'title': 'Journal Management System',
             'category': Category.objects.all(),
             'published_articles': filter_articles,
+            'tags': tags,
             'filter_form': filter_form,
+            'logged_user': request.user,
         }
     # article_list = ArticleFilter(request.GET, queryset=published_articles)
     else:
         context = {
             'title': 'Journal Management System',
             'category': categories,
-            'published_articles': published_articles,
+            'tags': tags,
+            'published_articles': Article.objects.none(),
             'filter_form': filter_form,
             'notice': Notice.objects.filter(status=True).first(),
+            'logged_user': request.user,
 
         }
     page = request.GET.get('page', 1)

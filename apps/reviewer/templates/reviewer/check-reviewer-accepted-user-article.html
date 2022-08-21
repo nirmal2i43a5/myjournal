@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+{{title}}
+{% endblock title %}
+
+
+
+{% block main_content %}
+
+<!-- Main content -->
+
+<section class="content">
+    
+    
+    <div class="container-fluid">
+
+        {% include "messages.html" %}
+
+        <div class="row">
+            <div class="col-md-9">
+                <iframe id = "pdf-annotate2" src="/viewer/viewer.html?file={{article.file.url}}&userId={{article.user.pk}}&articleId={{article.pk}}" width="100%"
+                height="700px" frameborder="0"></iframe>
+                
+            </div>
+            <div class="col-md-3">
+                <div class="card ">
+                    <form>
+                        {% for feedback in article.feedback_set.all %}
+                        <a type="button" href="{% url 'reviewer:edit_feedback' feedback.pk %}" class="btn btn-xs btn-success"><i class="fas fa-xs fa-edit"></i> <strong>Edit</strong></a>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">Status</label>
+                          <input type="text" class="form-control" value="{{feedback.status}}" disabled>
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputPassword1">Feedback</label>
+                          <textarea class="form-control" name="feedback" id="" cols="30" rows="10" disabled>{{feedback.feedback}}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Rating</label>
+                            <div class="rating-star">
+                                <p class="form-control" disabled>
+                                    <i class="fa fa-star{% if feedback.article.averageReview < 0.5 %}-o{% elif feedback.article.averageReview >= 0.5 and feedback.article.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if feedback.article.averageReview < 1.5 %}-o{% elif feedback.article.averageReview >= 1.5 and feedback.article.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if feedback.article.averageReview < 2.5 %}-o{% elif feedback.article.averageReview >= 2.5 and feedback.article.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if feedback.article.averageReview < 3.5 %}-o{% elif feedback.article.averageReview >= 3.5 and feedback.article.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if feedback.article.averageReview < 4.5 %}-o{% elif feedback.article.averageReview >= 4.5 and feedback.article.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                </p>
+                            </div>
+                          </div>
+                      </form>
+                    {% endfor %}
+
+                </div>
+        </div>
+
+    </div>
+    </div>
+</section>
+
+
+<style>
+    #magazineContainer,
+    #magazine {
+        background-color: #004de6;
+    }
+</style>
+
+{% endblock main_content %}
+

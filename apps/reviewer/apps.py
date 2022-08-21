@@ -5,6 +5,7 @@ from django.db.models.signals import post_migrate
 class ReviewerConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.reviewer'
+    icon = 'fa fa-star-half-o'
 
     def ready(self):
         import apps.user.signals

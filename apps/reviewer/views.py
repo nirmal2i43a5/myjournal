@@ -102,15 +102,16 @@ def normal_user_index(request):
     for user in users:
         user_object = get_object_or_404(CustomUser,id = user.normal_user.id )
         articles = user_object.article_set.all()
-        accepted_articles = user_object.article_set.filter(status = STATUS_ACCEPTED)
+        accepted_articles = user_object.article_set.filter(status = STATUS_REVIEWER_PUBLISHED)
         rejected_articles = user_object.article_set.filter(status = STATUS_REJECTED)
         article_under_review = user_object.article_set.filter(status = STATUS_UNDER_REVIEW)
-        article_publish_to_admin = user_object.article_set.filter(status = STATUS_REVIEWER_PUBLISHED)
+        article_publish_to_admin = user_object.article_set.filter(status = STATUS_ADMIN_PUBLISHED)
         total_articles_count = articles.count()
         accepted_articles_count = accepted_articles.count()
         rejected_articles_count = rejected_articles.count()
         article_under_review_count = article_under_review.count()
         article_publish_to_admin_count = article_publish_to_admin.count()
+        print(";::::::::::", article_publish_to_admin_count)
         
         total_articles.append({'total_articles':total_articles_count,'accepted_articles_count':accepted_articles_count,
                                'rejected_articles_count':rejected_articles_count,'article_under_review_count':article_under_review_count,
@@ -196,6 +197,15 @@ def check_user_article(request,pk):
     }
     return render(request,'reviewer/check-user-article.html',context)
 
+@permission_required('user.check_article', raise_exception=True)
+def check_review_accepted_user_article(request,pk):
+    article = get_object_or_404(Article, pk = pk)
+    context = {
+        'title':'Article Check',
+        'article':article,
+    }
+    return render(request,'reviewer/check-reviewer-accepted-user-article.html',context)
+
 
 @permission_required('user.check_article', raise_exception=True)
 def view_accepted_user_article(request,pk):
@@ -206,30 +216,33 @@ def view_accepted_user_article(request,pk):
     }
     return render(request,'reviewer/view-accepted-user-article.html',context)
 
-
-
 @permission_required('user.add_feedback', raise_exception=True)
 def article_feedback(request):
-    
     userId = request.POST['userId']
     articleId = request.POST['articleId']
     feedback = request.POST['feedback']
     status = request.POST['status']
+    rating = request.POST.get('rating')
     article_object = get_object_or_404(Article,pk = articleId)
     
+    print(userId, articleId, feedback, status, rating)
+    # print("ghda::",request.user.reviewer)
     if status == 'Accepted':
-        article_object.status = STATUS_REVIEWER_PUBLISHED 
+        article_object.status = STATUS_REVIEWER_PUBLISHED
+        article_object.reviewed_by = request.user.reviewer
         article_object.save()
     elif status == 'Rejected':
         # send emai with annotate pdf
-        
         article_object.status = STATUS_REJECTED
+        article_object.reviewed_by = request.user.reviewer
+
         article_object.save()     
     
     customuser_instance = get_object_or_404(CustomUser, pk = userId)
-    user_instance = get_object_or_404(NormalUser,pk = customuser_instance.normaluser.pk)
-    feedback = Feedback(feedback = feedback, status = status)
+    user_instance = get_object_or_404(NormalUser, pk = customuser_instance.normaluser.pk)
+    feedback = Feedback(feedback = feedback, status = status, rating=rating)
     feedback.user = user_instance
+    feedback.reviewed_by = request.user.reviewer
     feedback.article = article_object
     feedback.save()
     
@@ -249,16 +262,11 @@ def article_feedback(request):
     file = article_object.file
     # for file in files:
     email.attach(file.name, file.read())
-
     email.content_subtype = 'html'
     email.send()
     email.fail_silently = False
-
-    
     messages.success(request,"Successfully Review Paper")
     return redirect('reviewer:user-under-review-articles',userId)
-
-
 
 @permission_required('user.article_publish_to_admin_by_reviewer', raise_exception=True)
 def publish_to_admin(request,user_id,article_id):
@@ -270,3 +278,38 @@ def publish_to_admin(request,user_id,article_id):
     messages.success(request,"Article Successfully Published to Admin")
     return redirect('reviewer:user-accepted-articles',user_id)
     
+def edit_feedback(request,pk):
+    feedback_instance = get_object_or_404(Feedback,pk = pk)
+    reviewer_form = FeedbackForm(instance = feedback_instance)
+    print("up to here")
+    if request.method == "POST":
+        status = request.POST.get('status')
+        feedback = request.POST.get('feedback')
+        rating = request.POST.get('rating')
+        reviewed_by = request.user.reviewer
+        feedback_instance.status = status
+        feedback_instance.feedback = feedback
+        print("========", feedback_instance.rating)
+        feedback_instance.rating = rating
+        feedback_instance.reviewed_by = reviewed_by
+        feedback_instance.save()
+        feedback_update_status = Article.objects.get(pk=feedback_instance.article.pk)
+        if feedback_instance.status == 'Rejected':
+            feedback_update_status.status = STATUS_REJECTED
+            feedback_update_status.reviewed_by = request.user.reviewer
+            feedback_update_status.save()
+
+        if feedback_instance.status == 'Accepted':
+            feedback_update_status.status = STATUS_REVIEWER_PUBLISHED
+            feedback_update_status.reviewed_by = request.user.reviewer
+            feedback_update_status.save()
+        messages.success(request, "Successfully Edited feedback")
+        return redirect('reviewer:user-accepted-articles',feedback_instance.article.user.pk)
+            
+    context = {
+        'title':'Update Feedback',
+        'form':reviewer_form,
+        'article': feedback_instance.article,
+        'feedback': feedback_instance
+    }
+    return render(request,'reviewer/edit_feedback.html',context)

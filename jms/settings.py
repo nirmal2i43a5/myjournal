@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-
+from .utils import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 DEFAULT_APPS = [
     # 'material',
     # 'material.admin',
+    'admin_volt.apps.AdminVoltConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,10 +60,14 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework_datatables',
+    "taggit",
+    'ckeditor',
     
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
+
+TAGGIT_CASE_INSENSITIVE = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -170,12 +175,25 @@ STATICFILES_DIRS = [
     ]
 
 
-
-
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "cleditor_uploads/"
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_FILENAME_GENERATOR = 'utils.get_filename'
+
+#config for differnt type of WYSIWYG functionalities
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': None,
+        'height': 'full', 
+        'width': 'full', 
+    },
+ }
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

@@ -18,9 +18,46 @@
         {% include "messages.html" %}
 
         <div class="row">
+            {% if article %}
+            <div class="col-md-1">
+            </div>
+            {% if article.status == 'Under Review' or article.status == 'Rejected' %}
+            <div class="col-md-10">
+                <a href="{% url 'user:article-update' article.pk %}" class="btn btn-xs btn-success"><i class="fas fa-xs fa-edit"></i> <strong>Edit</strong></a>
+                <button  class="btn btn-danger btn-xs"  data-target='#deleteArticle-{{ article.id }}' data-toggle="modal"><i class="fas fa-sm fa-trash-alt"></i> <strong>Delete</strong></button>
+
+                <div class="modal fade" id="deleteArticle-{{ article.pk }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                
+                            <div class="modal-body">
+                                <form action="{% url 'user:article-delete' article.pk %}" method="post">
+                    
+                                    {% csrf_token %}
+                                    <p>Are you sure you want to delete <strong>{{ article.title }}</strong>?</p>
+                    
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
+                                    </div>
+                                </form>
+                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div>
+                           </div>
+            {%  endif %}
+        </div>
+
+        <div class="row">
 
           
-            <div class="col-md-1"></div>
+            <div class="col-md-1">
+            </div>
             <div class="col-md-10">
 
                 <iframe src="/viewer/viewer.html?file={{article.file.url}}" width="100%"

@@ -1,5 +1,6 @@
 """this views can be access by both student and staff"""
 
+from ast import Pass
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import SetPasswordForm
@@ -40,30 +41,30 @@ def user_set_password(request):
 
 
 def change_password(request):
-    if request.user.is_superuser:  # this is not adminuser
-        PassForm = PasswordChangeForm(request.user)
+    print("test")
+    # if request.user.is_superuser:  # this is not adminuser
+    if request.method == 'POST':
+        # i dont see instance when changing password
+        PassForm = PasswordChangeForm(user=request.user, data=request.POST)
+        if PassForm.is_valid():
+            PassForm.save()
+            update_session_auth_hash(request, PassForm.user)  # Important!
 
-        if request.method == 'POST':
-            # i dont see instance when changing password
-            PassForm = PasswordChangeForm(user=request.user, data=request.POST)
-
-            if PassForm.is_valid():
-                PassForm.save()
-                update_session_auth_hash(request, PassForm.user)  # Important!
-
-                messages.success(
-                    request, "Your password is successfully updated.Now you can login with your new password.")
-                return redirect('login')
-
-        context = {
-            'change_form': PassForm
-        }
-        return render(request, 'user_reset_password/change_password.html', context)
+            messages.success(
+                request, "Your password is successfully updated.Now you can login with your new password.")
+            return redirect('login')
+    else:
+        PassForm = PasswordChangeForm(user = request.user)
+    context = {
+        'change_form': PassForm
+    }
+    return render(request, 'user_reset_password/change_password.html', context)
 
 
 def password_change_form(request):
     if request.method == 'POST' and 'change_pass_button' in request.POST:
         # i dont see instance when changing password
+        print("data")
         PassForm = PasswordChangeForm(user=request.user, data=request.POST)
 
         if PassForm.is_valid():
